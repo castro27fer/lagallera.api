@@ -39,6 +39,10 @@ app.use('/assets', express.static(`${__dirname}/assets`));
 IO.on('connection', (socket) => {
     console.log('a user connected');
 
+    socket.on("chatExample",(frame) =>{
+        IO.brocadcast.emit("chatExample",frame);
+    })
+
     socket.on('disconnect', () => {
         console.log('user disconnected');
     });
