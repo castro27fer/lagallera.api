@@ -43,6 +43,11 @@ IO.on('connection', (socket) => {
         IO.brocadcast.emit("chatExample",frame);
     })
 
+    socket.on('video-stream', (data) => {
+        // Reenvía la transmisión a todos los clientes conectados
+        socket.emit('video-stream', data);
+    });
+
     socket.on('disconnect', () => {
         console.log('user disconnected');
     });
