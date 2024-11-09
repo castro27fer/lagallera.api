@@ -39,6 +39,26 @@ app.use('/assets', express.static(`${__dirname}/assets`));
 IO.on('connection', (socket) => {
     console.log('a user connected');
 
+    socket.on("offer", desc => {
+        
+        // console.log("offer: ", desc);
+        socket.broadcast.emit("getOffer", desc);
+
+    });
+
+    socket.on("answer", desc => {
+        
+        // console.log("answer: ",desc);
+        socket.broadcast.emit("getAnswer", desc);
+    });
+
+    socket.on("candidate", candidate => {
+        socket.broadcast.emit("candidate", candidate);
+        // console.log("candidate: ",candidate);
+    });
+
+
+
     socket.on("chatExample",(frame) =>{
         IO.brocadcast.emit("chatExample",frame);
     })
