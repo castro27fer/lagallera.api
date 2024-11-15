@@ -4,19 +4,13 @@ const express =  require('express');
 const morgan = require('morgan');
 const cors = require('cors');
 const { createServer } = require('node:http');
-const { Server } = require('socket.io');
+const { createSocketIO } = require("./modules/socket.js");
 
 const app = express();
 const server = createServer(app);
 
 const FRONTEND = process.env.APP_HOST;
 const TEST = process.env.TEST;
-
-const IO = new Server(server,{
-    cors:{
-        origin:FRONTEND
-    }
-})
 
 //settings 
 app.set("port",process.env.PORT);
@@ -36,42 +30,6 @@ app.use("/api",require("./router/routes.js"));
 
 app.use('/assets', express.static(`${__dirname}/assets`));
 
-IO.on('connection', (socket) => {
-    console.log('a user connected');
-
-    socket.on("offer", desc => {
-        
-        // console.log("offer: ", desc);
-        socket.broadcast.emit("getOffer", desc);
-
-    });
-
-    socket.on("answer", desc => {
-        
-        // console.log("answer: ",desc);
-        socket.broadcast.emit("getAnswer", desc);
-    });
-
-    socket.on("candidate", candidate => {
-        socket.broadcast.emit("candidate", candidate);
-        // console.log("candidate: ",candidate);
-    });
-
-
-
-    socket.on("chatExample",(frame) =>{
-        IO.brocadcast.emit("chatExample",frame);
-    })
-
-    socket.on('video-stream', (data) => {
-        // Reenvía la transmisión a todos los clientes conectados
-        IO.emit('video-stream', data);
-    });
-
-    socket.on('disconnect', () => {
-        console.log('user disconnected');
-    });
-
-});
+createSocketIO(server);
 
 module.exports = server;
