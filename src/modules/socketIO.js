@@ -1,4 +1,5 @@
 const { Server } = require('socket.io');
+const { room } = require('./room');
 
 const FRONTEND = process.env.APP_HOST;
 
@@ -14,17 +15,34 @@ const createSocketIO = (server)=>{
         }
     });
 
+    connectWithClient();
+
+}
+
+const connectWithClient = () =>{
+
     IO.on('connection', (socket) => {
 
         console.log('a user connected',socket.id);
     
-        clients.push({
-            id:socket.id
+        clients.push(socket);
+
+        socket.on("create_streming",(props)=>{
+            const neewRoom = new room(props.title,props.description,socket);
+            rooms.push(neewRoom);
         });
-        // socket.on("users",desc =>{
-        //     socket.broadcast.emit("users",)
-        // })
-    
+
+        socket.on("chat_room",(params) =>{
+            const room_streaming = rooms.find(x => x.id === socket.data.roomId);
+            IO.to(room_streaming.room).emit("message",params.message);
+        });
+
+        socket.on("send_offer_of_connection",(params)=>{
+
+            //aqui debo continuar.......
+
+        })
+
         socket.on("offer", desc => {
             
             // console.log("offer: ", desc);
@@ -58,6 +76,32 @@ const createSocketIO = (server)=>{
         });
     
     });
+
+}
+
+//eventos
+const roomsOfStreming = (socket)=>{
+
+    //event create streming
+    socket.on("createStreming", (socket) => {
+        const streaming = new room("TEST STREMING",`ROOMCHAT_${socket.id} testing streming`,socket);
+        rooms.push(streaming);
+    });
+
+    socket.on("closeStreming",(socket)=>{
+
+        const room = rooms.find(x=>x.streming.id === socket.id);
+        room.close();
+    });
+
+}
+
+const roomsOfClients = (socket)=>{
+
+    socket.on("connectStreming",(props)=>{
+
+    })
+
 
 }
 
