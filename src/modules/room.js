@@ -1,11 +1,11 @@
 
-STATUS = {
+const STATUS = {
     CREATED:"created",
     FULL:"full",
     CLOSE:"close",
-}
+};
 
-export class room {
+class room {
 
     id = null;
     state = null;
@@ -40,3 +40,5 @@ export class room {
 
 
 }
+
+module.exports = { room }

@@ -4,7 +4,7 @@ const express =  require('express');
 const morgan = require('morgan');
 const cors = require('cors');
 const { createServer } = require('node:http');
-const { createSocketIO } = require("./modules/socket.js");
+const { createSocketIO } = require("./modules/socketIO.js");
 
 const app = express();
 const server = createServer(app);

@@ -23,13 +23,14 @@ const connectWithClient = () =>{
 
     IO.on('connection', (socket) => {
 
-        console.log('a user connected',socket.id);
+        console.log('user connected',socket.id);
     
         clients.push(socket);
 
-        socket.on("create_streming",(props)=>{
+        socket.on("create_streaming",(props)=>{
             const neewRoom = new room(props.title,props.description,socket);
             rooms.push(neewRoom);
+            console.log("created streaming.....",socket.id)
         });
 
         socket.on("chat_room",(params) =>{
@@ -39,37 +40,50 @@ const connectWithClient = () =>{
 
         socket.on("send_offer_of_connection",(params)=>{
 
-            //aqui debo continuar.......
+            const { desc, streamingId } = params;
 
-        })
+            IO.in(streamingId).emit("offers_of_connection",{ desc, socketId : socket.id });
 
-        socket.on("offer", desc => {
+            console.log("send offert of connection",socket.id,streamingId);
+
+        });
+
+        socket.on("send_answer_of_connection",params =>{
+            const { desc, socketId } = params;
+
+            IO.in(socketId).emit("answer_of_connection",{ desc });
+
+            console.log("send answer of connection",socket.id,socketId);
+        });
+
+        socket.on("send_candidates_of_connection", params => {
             
-            // console.log("offer: ", desc);
-            socket.broadcast.emit("getOffer", desc);
-    
-        });
-    
-        socket.on("answer", desc => {
+            const { socketId, candidate } = params;
             
-            // console.log("answer: ",desc);
-            socket.broadcast.emit("getAnswer", desc);
+            IO.in(socketId).emit("candidates_of_connection", { candidate, socketId :  socket.id });
+            console.log("send candidates of connection....",socket.id,socketId)
         });
     
-        socket.on("candidate", candidate => {
-            socket.broadcast.emit("candidate", candidate);
-            // console.log("candidate: ",candidate);
-        });
+        // socket.on("answer", desc => {
+            
+        //     // console.log("answer: ",desc);
+        //     socket.broadcast.emit("getAnswer", desc);
+        // });
+    
+        // socket.on("candidate", candidate => {
+        //     socket.broadcast.emit("candidate", candidate);
+        //     // console.log("candidate: ",candidate);
+        // });
     
     
     
-        socket.on("ROOM_CLIENT_001",(data) =>{
-            socket.broadcast.emit(data);
-        })
+        // socket.on("ROOM_CLIENT_001",(data) =>{
+        //     socket.broadcast.emit(data);
+        // })
 
         socket.on("disconnecting", () => {
             console.log(socket.rooms); // the Set contains at least the socket ID
-          });
+        });
     
         socket.on('disconnect', () => {
             console.log('user disconnected');
@@ -107,6 +121,7 @@ const roomsOfClients = (socket)=>{
 
 module.exports = {
     createSocketIO,
-    rooms
+    rooms,
+    IO
 }
 

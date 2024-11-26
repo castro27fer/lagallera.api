@@ -1,4 +1,5 @@
-const IO = require("../modules/socket");
+
+let rooms = [];
 
 const createRoom = async(req,res) =>{
     console.log("request createRoom");
@@ -6,6 +7,7 @@ const createRoom = async(req,res) =>{
     
     res.status(200).json({ room:"" })
 }
+
 
 module.exports = {
     createRoom
