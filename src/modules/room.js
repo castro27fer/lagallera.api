@@ -36,6 +36,14 @@ class room {
 
     }
 
+    addClient = (socket)=>{
+
+        console.log(socket,this.room)
+        socket.join(this.room);
+        this.clients.push(socket);
+
+    }
+
 
 
 
