@@ -15,17 +15,17 @@ const logIn = async(req,res)=>{
         const user = users.find(x => x.email === email);
 
         if(!user){
-            res.status(400).json({message:"La cuenta no fue encontrada.",validations:[]});
+            res.status(400).json({message:"La cuenta no fue encontrada.",validations:[]}); return;
         }
 
         if(!user.active){
-            res.status(400).json({message:"La cuenta no esta activa.",validations:[]});
+            res.status(400).json({message:"La cuenta no esta activa.",validations:[]}); return;
         }
         
         const password_is_equal = await compare(password,user.password);
 
         if(!password_is_equal){
-            res.status(400).json({message:"La contraseña es incorrecta.",validations:[]});
+            res.status(400).json({message:"La contraseña es incorrecta.",validations:[]}); return;
         }
 
         const SESSION = { 
