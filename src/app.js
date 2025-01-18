@@ -3,19 +3,30 @@ require("dotenv").config({path:"./.env"});
 const express =  require('express');
 const morgan = require('morgan');
 const cors = require('cors');
+
 const { createServer } = require('node:http');
-const { createSocketIO } = require("./modules/socketIO.js");
+const { Server } = require('socket.io');
 
-const app = express();
-const server = createServer(app);
+const socketRouter = require("./router/socketIO.route.js");
 
+//COSTANTE
 const FRONTEND = process.env.APP_HOST;
 const TEST = process.env.TEST;
 
-//settings 
-app.set("port",process.env.PORT);
+//Starting Servers
+const app = express();
+const httpServer = createServer(app);
 
-//Middleware
+const ioServer = new Server(httpServer,{
+    cookie: true,
+    path: '/socket.io',
+    cors:{
+        origin:FRONTEND
+    }
+});
+
+ioServer.on("connection",(socket) => socketRouter(socket,ioServer));
+
 app.use(morgan('dev'));
 app.use(express.urlencoded({extended:false}));
 app.use(express.json());
@@ -30,6 +41,6 @@ app.use("/api",require("./router/routes.js"));
 
 app.use('/assets', express.static(`${__dirname}/assets`));
 
-createSocketIO(server);
-
-module.exports = server;
+module.exports = {
+    httpServer
+};

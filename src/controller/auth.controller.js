@@ -1,6 +1,6 @@
-const { compare, encrypt } = require('../modules/bcrypt');
-const { users } = require("../bd/database");
-const { generate_token,verify_token } = require("../modules/jwt");
+const { compare, encrypt } = require('../modules/bcrypt.js');
+const { users } = require("../bd/database.js");
+const { generate_token,verify_token } = require("../modules/jwt.js");
 const {exception, STATUS} = require("../exception.js");
 
 
@@ -30,7 +30,7 @@ const logIn = async(req,res)=>{
 
         const SESSION = { 
             email,
-            userId:user.id, 
+            id:user.id, 
             date: Date.now()
         }
         //generate token session

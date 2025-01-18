@@ -1,19 +1,22 @@
 
 require("dotenv").config({path:"./.env"});
 // const dataBaseSync = require("./database/dataBaseSync.js");
-const app = require('./app.js');
+const { httpServer } = require('./app.js');
+
 
 //starting the server 
-const port = process.env.PORT;
+const portHttp = process.env.PORT;
 
 async function main(){
      try{
        
         // dataBaseSync(false);
         
-        app.listen(port, ()=>{
-            console.log("starting server " + port);
+        httpServer.listen(portHttp, ()=>{
+            console.log("starting server http " + portHttp);
         });
+
+      
     }
     catch(error){
         console.error("not starting server", error);

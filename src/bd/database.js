@@ -1,4 +1,7 @@
 
+let STREAMS = [];
+let CLIENTS = [];
+
 class user {
 
     constructor(props){
@@ -33,5 +36,7 @@ const users = [
 ];
 
 module.exports = {
-    users
+    users,
+    STREAMS, //live on
+    CLIENTS,
 }

@@ -1,3 +1,5 @@
+const { CLIENTS, STREAMS } = require("../bd/database");
+
 
 const STATUS = {
     CREATED:"created",
@@ -12,40 +14,59 @@ class room {
     title = null;
     description = null;
     room = null;
-    emisor = null;
+    socket = null;
+    sockets = [];
     clients = [];
+    emisor = null;
 
-    constructor(title,description,socket){
+    constructor(title,description,emisor){
 
-        this.id = socket.id;
         this.state = STATUS.CREATED;
         this.title = title;
         this.description = description;
-        this.room = `ROOM_${socket.id}`
-        this.emisor = socket;
+        
+        this.emisor = emisor;
 
-        this.emisor.data.roomId = this.id;
+        const getRndInteger = (min, max) => {
+            return Math.floor(Math.random() * (max - min) ) + min;
+          }
 
-        this.emisor.join(this.room);  
+        this.id = getRndInteger(10000,99999);
 
+        this.room = `ROOM_${this.id}`;
     }
 
+    setEmisor(socket){
 
+        socket.data = {
+            streamingId : this.id,
+        }
+        
+        socket.join(this.room);
 
-    sendMessage = (message) =>{
-
+        this.socket = socket;
+        this.sockets.push(this.socket);
+        
+        console.log("socket join room chat");
     }
+
 
     addClient = (socket)=>{
 
-        console.log(socket,this.room)
+        socket.data = {
+            streamingId : this.id,
+        }
+
         socket.join(this.room);
+        CLIENTS.push(socket);
         this.clients.push(socket);
+        this.sockets.push(socket);
 
     }
 
-
-
+    getClient = (socketId) =>{
+        return this.sockets.find(x => x.id === socketId);
+    }
 
 }
 

@@ -22,7 +22,9 @@ const format = (string,params)=>{
 TYPEERROR = {
     NOT_FOUND:  "NotFound",
     INVALID:    "inValid",
-    ERROR:      "Error"
+    ERROR:      "Error",
+    TOKEN_EXPIRED_ERROR : "TokenExpiredError",
+    NOT_AUTORIZED : "Not autorized"
 }
 
 MESSAGE_ERROR_DEFAULT = "ocurrio un error inesperado";
@@ -73,10 +75,13 @@ const exception = (exception)=>{
       
         return err(STATUS.BAD_REQUEST,exception.message,[]);
     }
-    // else if(exception.name === TYPEERROR.ERROR){
+    else if(exception.name === TYPEERROR.TOKEN_EXPIRED_ERROR){
       
-    //     return err(STATUS.ERROR,exception.message);
-    // }
+        return err(STATUS.UNAUTHORIZED,"Sesión Expirada.");
+    }
+    else if(exception.name === TYPEERROR.NOT_AUTORIZED){
+        return err(STATUS.UNAUTHORIZED,"Usted no esta autorizado.");
+    }
     else {
         // Manejar otros errores inesperados
            

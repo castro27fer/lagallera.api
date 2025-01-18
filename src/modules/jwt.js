@@ -2,6 +2,9 @@ const jwt = require("jsonwebtoken");
 
 // const AWAIT_TIME = process.env.RESENT_CODE_VERIFY;
 
+const SESSION_EXPIRATION = process.env.SESSION_EXPIRATION;
+const secret_key = process.env.JWS_SECRET_KEY;
+
 const generate_token = async(data,secret_key,expired) => {
 
     return new Promise((resolve, reject) =>{
@@ -42,4 +45,4 @@ const get_token = (req) =>{
     return header.split(" ")[1];
 }
 
-module.exports = { generate_token,verify_token,get_token }
+module.exports = { generate_token,verify_token,get_token, secret_key, SESSION_EXPIRATION }
