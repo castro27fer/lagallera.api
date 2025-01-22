@@ -14,17 +14,20 @@ const get_acces_to_streaming = async(req,res) =>{
         }
 
         const user = {
-            id : streaming.id,
-            title: streaming.title,
-            description:streaming.description
+            name:"desconocido"
         };
 
         //generate token access from user public
         const token = await generate_token(user,secret_key,SESSION_EXPIRATION);
-
+        
         res.status(STATUS.OK).json({
             token,
-            streaming: user
+            user,
+            streaming: {
+                id: streaming.id,
+                title: streaming.title,
+                description: streaming.description
+            }
         });
     }
     catch(err){

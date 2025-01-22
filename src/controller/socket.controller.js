@@ -45,11 +45,12 @@ const send_offer_of_connection = (socket,params)=>{
 
         const index = STREAMS.findIndex(x => x.id === parseInt(streamingId));
 
-        socket.data.streamingId = streamingId;
+        // socket.data.streamingId = streamingId;
         const room = STREAMS[index];
         if(!room){
             // socket.emit("connect_error", { message: "El envivo no fue encontrado." });
-            socket.disconnect();
+            socket.disconnect(); 
+            console.log(`room ${streamingId} not found`); return;
         }
         
         room.addClient(socket);
@@ -96,11 +97,17 @@ const send_candidates_of_connection = (socket,params) => {
         const streamingId = socket.data.streamingId;
 
         const room = STREAMS.find(x => x.id === parseInt(streamingId));
+        if(!room){
+            socket.disconnect();
+            console.log(`Streaming ${streamingId} not found.`); return;
+        }
+
         let socketClient = room.getClient(socketId);
 
         if(!socketClient){
             if(!room.socket.id === socketId){
-                console.log("Socket not found for send candidates"); return;
+                socket.disconnect();
+                console.log(`Socket ${socketId} not found for send candidates`); return;
             }
             socketClient = room.socket;
         }
@@ -121,7 +128,7 @@ const disconnecting = (socket,params) => {
 }
 
 const disconnect = (socket,params) => {
-    console.log('user disconnected');
+    console.log(`user ${socket.id} disconnected`);
 }
 
 module.exports = {

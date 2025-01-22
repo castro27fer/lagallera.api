@@ -20,9 +20,11 @@ const httpServer = createServer(app);
 const ioServer = new Server(httpServer,{
     cookie: true,
     path: '/socket.io',
-    cors:{
-        origin:FRONTEND
-    }
+    cors: {
+        origin: FRONTEND, 
+        methods: ['GET', 'POST'],
+        credentials: true,
+      },
 });
 
 ioServer.on("connection",(socket) => socketRouter(socket,ioServer));
