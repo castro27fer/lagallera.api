@@ -28,8 +28,6 @@ const create_streaming = async(req,res) =>{
         console.log(ex);
         res.status(ex.status).json(ex);
     };
-    
-
 }
 
 const getStreaming = async(req,res) =>{
@@ -43,7 +41,17 @@ const getStreaming = async(req,res) =>{
             res.status(STATUS.NOT_FOUND).json({message:"Streaming not found..",validations:[]}); return;
         }
 
-        res.status(STATUS.OK).json({message:"success", streaming : streaming});
+
+
+        
+        const auxStreaming = {
+            id:streaming.id,
+            title:streaming.title,
+            description:streaming.description
+        }
+
+        // console.log("Este es el error", streaming);
+        res.status(STATUS.OK).json({message:"success", streaming : auxStreaming});
     }
     catch(err){
         const ex = exception(err);

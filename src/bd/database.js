@@ -2,6 +2,7 @@
 let STREAMS = [];
 let CLIENTS = [];
 
+
 class user {
 
     constructor(props){
@@ -16,6 +17,45 @@ class user {
     }
 }
 
+//declare stream
+class stream{
+
+    id = null;
+    title = null;
+    description = null;
+    emisor = null;
+    room = null;
+    status = "CREATED";
+    spectators = [];
+
+    constructor(props){
+
+        this.id = props.id;
+        this.title = props.title;
+        this.description = props.description;
+        this.emisor = props.emisor;
+        this.room = props.room;
+    }
+
+}
+
+//declare spectator
+class spectator{
+
+    id = null;
+    userId = null;
+    socketId = null;
+    streamId = null;
+
+    constructor(props){
+        this.id = props.id;
+        this.userId = props.userId;
+        this.socketId = props.socketId;
+        this.streamId = props.streamId;
+    }
+}
+
+//list of users
 const users = [
     new user({
         id:1,
@@ -34,6 +74,16 @@ const users = [
         active:true
     })
 ];
+
+const streams = [
+    new stream({
+        id:25725,
+        title:"Stream 1",
+        description:"Stream 1 Description",
+        emisor:1,
+        room:"room1"
+    })
+]
 
 module.exports = {
     users,

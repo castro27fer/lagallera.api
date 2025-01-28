@@ -17,7 +17,7 @@ const create_streaming = (socket,props) =>{
     catch(err){
         console.log(err);
         // socket.emit("connect_error", { message: "Ocurrio un error inesperado al establecer la conexión al envivo." });
-        socket.disconnect();
+        socket.disconnect(err);
     }
    
 
@@ -33,7 +33,7 @@ const sendMessage = (socket,IO,params) =>{
     catch(err){
         console.log(err);
         // socket.emit("connect_error", { message: "Ocurrio un error inesperado al establecer la conexión al envivo." });
-        socket.disconnect();
+        socket.disconnect(err);
     }
 
 }
@@ -49,7 +49,7 @@ const send_offer_of_connection = (socket,params)=>{
         const room = STREAMS[index];
         if(!room){
             // socket.emit("connect_error", { message: "El envivo no fue encontrado." });
-            socket.disconnect(); 
+            socket.disconnect(`room ${streamingId} not found`); 
             console.log(`room ${streamingId} not found`); return;
         }
         
@@ -61,7 +61,7 @@ const send_offer_of_connection = (socket,params)=>{
     catch(err){
         console.log(err);
         // socket.emit("connect_error", { message: "Ocurrio un error inesperado al establecer la conexión al envivo." });
-        socket.disconnect();
+        socket.disconnect(err);
     }
 
 }
@@ -69,7 +69,7 @@ const send_offer_of_connection = (socket,params)=>{
 const send_answer_of_connection = (socket,params) =>{
 
     try{
-        const { desc, socketId, streamingId } = params;
+        const { desc, socketId } = params;
 
         const room = STREAMS.find(x =>x.id === parseInt(socket.data.streamingId));
         // console.log("socketId",socketId,"streamingId",socket.data.streamingId,"room",room)
@@ -83,7 +83,7 @@ const send_answer_of_connection = (socket,params) =>{
     catch(err){
         console.log(err);
         // socket.emit("connect_error", { message: "Ocurrio un error inesperado al establecer la conexión al envivo." });
-        socket.disconnect();
+        socket.disconnect(err);
     }
 
 }
@@ -91,34 +91,34 @@ const send_answer_of_connection = (socket,params) =>{
 const send_candidates_of_connection = (socket,params) => {
 
     try{
-        const { socketId, candidate } = params;
+        const { socketId,candidate } = params;
 
         // console.log("CANDIDATES: socket "+ socket.id +" send candidates from ",socketId,"streaming id",socket.data.streamingId)
         const streamingId = socket.data.streamingId;
 
         const room = STREAMS.find(x => x.id === parseInt(streamingId));
+
         if(!room){
-            socket.disconnect();
+            socket.disconnect(`Streaming ${streamingId} not found.`);
             console.log(`Streaming ${streamingId} not found.`); return;
         }
 
-        let socketClient = room.getClient(socketId);
+        //soy el streaming
+        if(socket.id === room.socket.id){
 
-        if(!socketClient){
-            if(!room.socket.id === socketId){
-                socket.disconnect();
-                console.log(`Socket ${socketId} not found for send candidates`); return;
-            }
-            socketClient = room.socket;
+            let socketClient = room.getClient(socketId);
+            socketClient.emit("candidates_of_connection", { candidate, socketId :  socket.id });
+            console.log(`CANDIDATES: ${socket.id} send candidates from ${socketClient.id}`);
         }
-
-        socketClient.emit("candidates_of_connection", { candidate, socketId :  socket.id });
-        console.log(`CANDIDATES: ${socket.id} send candidates from ${socketId}`)
+        else{ // soy el receptor...
+            room.socket.emit("candidates_of_connection", { candidate, socketId :  socket.id });
+            console.log(`CANDIDATES: ${socket.id} send candidates from ${room.socket.id}`)
+        }
     }
     catch(err){
         console.log(err);
         // socket.emit("connect_error", { message: "Ocurrio un error inesperado al establecer la conexión al envivo." });
-        socket.disconnect();
+        socket.disconnect(err);
     }
 
 }
