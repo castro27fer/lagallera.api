@@ -18,14 +18,16 @@ class room {
     sockets = [];
     clients = [];
     emisor = null;
+    certificate = null;
 
-    constructor(title,description,emisor){
+    constructor(title,description,emisor,certificate){
 
         this.state = STATUS.CREATED;
         this.title = title;
         this.description = description;
         
         this.emisor = emisor;
+        this.certificate = certificate;
 
         const getRndInteger = (min, max) => {
             return Math.floor(Math.random() * (max - min) ) + min;
@@ -34,6 +36,7 @@ class room {
         this.id = getRndInteger(10000,99999);
 
         this.room = `ROOM_${this.id}`;
+
     }
 
     setEmisor(socket){
@@ -47,7 +50,6 @@ class room {
         this.socket = socket;
         this.sockets.push(this.socket);
         
-        console.log("socket join room chat");
     }
 
 

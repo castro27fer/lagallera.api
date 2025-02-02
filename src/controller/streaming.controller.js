@@ -7,11 +7,12 @@ const { STREAMS } = require("../bd/database.js");
 const create_streaming = async(req,res) =>{
 
     try{
-        const { title, description } = req.body;
+        const { title, description,certificate } = req.body;
         
         const auth = req["AUTH"];
         
-        let neewRoom = new room(title,description,auth);
+        // console.log("I'm certificate",certificate)
+        let neewRoom = new room(title,description,auth,certificate);
         STREAMS.push(neewRoom);
         
         console.log(`CREATE STREAM: ${neewRoom.id} created streaming`);
@@ -41,13 +42,11 @@ const getStreaming = async(req,res) =>{
             res.status(STATUS.NOT_FOUND).json({message:"Streaming not found..",validations:[]}); return;
         }
 
-
-
-        
         const auxStreaming = {
             id:streaming.id,
             title:streaming.title,
-            description:streaming.description
+            description:streaming.description,
+            certificate:streaming.certificate,
         }
 
         // console.log("Este es el error", streaming);
