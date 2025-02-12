@@ -35,11 +35,7 @@ app.use(express.json());
 
 app.use(cors({ origin: [FRONTEND,TEST], optionsSuccessStatus: 200 }));
   
-app.get("/",(req,res) =>{
-    res.json({"lagallera.com":"Bienvenido a la gallera..."});
-});
-
-app.use("/api",require("./router/routes.js"));
+app.use("/",require("./router/routes.js"));
 
 app.use('/assets', express.static(`${__dirname}/assets`));
 
