@@ -1,14 +1,16 @@
 
 const { room } = require('../modules/room.js');
-const { get_token, verify_token,secret_key } = require("../modules/jwt");
 const {exception, STATUS} = require("../exception.js");
 const { STREAMS } = require("../bd/database.js");
+const Certificate = require("../modules/certificate.js");
 
 const create_streaming = async(req,res) =>{
 
     try{
-        const { title, description,certificate } = req.body;
+        // const { title, description,certificate } = req.body;
+        const { title, description } = req.body;
         
+        const certificate = new Certificate();
         const auth = req["AUTH"];
         
         // console.log("I'm certificate",certificate)
@@ -42,11 +44,14 @@ const getStreaming = async(req,res) =>{
             res.status(STATUS.NOT_FOUND).json({message:"Streaming not found..",validations:[]}); return;
         }
 
+        const certificate = streaming.certificate.generateCertificate();
+        console.log("obtener certificado",certificate)
+        
         const auxStreaming = {
             id:streaming.id,
             title:streaming.title,
             description:streaming.description,
-            certificate:streaming.certificate,
+            certificate:certificate,
         }
 
         // console.log("Este es el error", streaming);
@@ -60,7 +65,32 @@ const getStreaming = async(req,res) =>{
     
 }
 
+
+const keygenAlgorithm222 = async(req,res) =>{
+
+    try{
+
+        res.status(STATUS.OK).json({
+            keygenAlgorithm:JSON.stringify({
+                name: "RSASSA-PKCS1-v1_5",
+                modulusLength: 2048,
+                publicExponent: [0x01, 0x00, 0x01],
+                hash: "SHA-256"
+            }),
+        });
+
+        // res.status(STATUS.OK).json({message:"hola"});
+
+    }
+    catch(err){
+        const ex = exception(err);
+        console.log(ex);
+        res.status(ex.status).json(ex);
+    }
+}
+
 module.exports = {
     create_streaming,
-    getStreaming
+    getStreaming,
+    keygenAlgorithm222
 }

@@ -24,7 +24,7 @@ const webSocketSecure = async(socket,next)=>{
    try{
 
     const token = socket.handshake.query.token;
-    console.log("datos para validar token",token,secret_key)
+    // console.log("datos para validar token",token,secret_key)
     await verify_token(token,secret_key);
     next(); return; 
 
@@ -32,10 +32,8 @@ const webSocketSecure = async(socket,next)=>{
    catch(err){
 
     if(err.name === "TokenExpiredError"){
-        console.log("si foy sesion expirada..")
+     
     }
-    console.error("este es el erro que vfeo",err);
-    // socket.emit("connect_error", { message: "Ocurrio un error inesperado al establecer la conexión al envivo." });
     socket.disconnect();
 
    }
