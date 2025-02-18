@@ -12,7 +12,7 @@ const socketRouter = require("./router/socketIO.route.js");
 //COSTANTE
 const FRONTEND = process.env.APP_HOST;
 const TEST = process.env.TEST;
-const environment = process.env.REACT_APP_ENVIRONMENT;
+const environment = process.env.ENVIRONMENT;
 
 //Starting Servers
 const app = express();
