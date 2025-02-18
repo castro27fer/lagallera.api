@@ -12,6 +12,7 @@ const socketRouter = require("./router/socketIO.route.js");
 //COSTANTE
 const FRONTEND = process.env.APP_HOST;
 const TEST = process.env.TEST;
+const environment = process.env.REACT_APP_ENVIRONMENT;
 
 //Starting Servers
 const app = express();
@@ -35,7 +36,7 @@ app.use(express.json());
 
 app.use(cors({ origin: [FRONTEND,TEST], optionsSuccessStatus: 200 }));
   
-app.use("/",require("./router/routes.js"));
+app.use(environment === "PRODUCCTION" ? "" : "/api",require("./router/routes.js"));
 
 app.use('/assets', express.static(`${__dirname}/assets`));
 
