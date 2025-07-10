@@ -4,8 +4,8 @@
   "description": "Apuestas de gallo en linea",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon src/index.js",
-    "production": "node src/index.js"
+    "start": "nodemon --env-file=.env.development src/index.js",
+    "production": "node --env-file=.env.production src/index.js"
   },
   "author": "Fernando Osmar Castro Martinez",
   "license": "ISC",
